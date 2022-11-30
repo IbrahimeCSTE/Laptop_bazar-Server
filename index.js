@@ -125,6 +125,27 @@ app.delete("/api/all-seller/:id", async (req, res) => {
   });
   res.status(200).send({ msg: "Deleted" });
 });
+app.patch("/api/all-seller/:id", async (req, res) => {
+  const id = req.params.id;
+  const isVerify = req.body.isVerify;
+  const query = { _id: ObjectId(id) };
+
+  // const allProduct = await productCollection
+  //   .find({
+  //     userId: id,
+  //   })
+  //   .toArray();
+  const query1 = { userId: id };
+
+  const updatedUser = {
+    $set: {
+      verified: isVerify,
+    },
+  };
+  await userCollection.updateOne(query, updatedUser);
+  await productCollection.updateMany(query1, updatedUser);
+  res.status(200).send({ msg: isVerify });
+});
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
