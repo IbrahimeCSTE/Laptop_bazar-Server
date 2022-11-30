@@ -66,6 +66,31 @@ app.post("/api/user/register", async (req, res) => {
     res.status(400).send({ error: err.massage });
   }
 });
+//user post login router
+app.post("/api/user/login", async (req, res) => {
+  try {
+    const user = req.body;
+    // console.log(user);
+    const loginUser = await userCollection.findOne({
+      email: user.email,
+    });
+    const payload = {
+      user: {
+        email: user.email,
+      },
+    };
+    const token = jwt.sign(payload, process.env.JWT_SECRETE, {
+      expiresIn: "1d",
+    });
+    res.status(200).send({
+      msg: `Login by ${loginUser.name}`,
+      token: token,
+      user: loginUser,
+    });
+  } catch (err) {
+    res.status(400).send({ error: err.massage });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
