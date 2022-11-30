@@ -19,6 +19,53 @@ const categoryCollection = client.db("IMS").collection("category");
 const productCollection = client.db("IMS").collection("product");
 const orderCollection = client.db("IMS").collection("orders");
 const paymentsCollection = client.db("IMS").collection("payment");
+app.post("/api/user/register", async (req, res) => {
+  try {
+    const user = req.body;
+    //console.log(user);
+    const loginUser = await userCollection.findOne({
+      email: user.email,
+    });
+    //console.log(loginUser);
+    if (!loginUser) {
+      await userCollection.insertOne(user);
+      const findNewUser = await userCollection.findOne({
+        email: user.email,
+      });
+      // console.log(findNewUser);
+      const payload = {
+        user: {
+          email: user.email,
+        },
+      };
+      const token = jwt.sign(payload, process.env.JWT_SECRETE, {
+        expiresIn: "1d",
+      });
+      res.status(200).send({
+        msg: "Registration Successfully",
+        token: token,
+        user: findNewUser,
+      });
+      // console.log(result);
+    } else {
+      const payload = {
+        user: {
+          email: user.email,
+        },
+      };
+      const token = jwt.sign(payload, process.env.JWT_SECRETE, {
+        expiresIn: "1d",
+      });
+      res.status(200).send({
+        msg: "Registration Successfully",
+        token: token,
+        user: loginUser,
+      });
+    }
+  } catch (err) {
+    res.status(400).send({ error: err.massage });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
