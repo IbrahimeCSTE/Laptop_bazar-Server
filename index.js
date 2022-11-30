@@ -108,6 +108,23 @@ app.delete("/api/all-buyer/:id", async (req, res) => {
   });
   res.status(200).send({ msg: "Deleted" });
 });
+//all seller
+app.get("/api/all-seller", verifyJwt, async (req, res) => {
+  const allSeller = await userCollection
+    .find({
+      rol: "seller",
+    })
+    .toArray();
+  res.status(200).send({ seller: allSeller });
+});
+//seller delete
+app.delete("/api/all-seller/:id", async (req, res) => {
+  const id = req.params.id;
+  await userCollection.deleteOne({
+    _id: ObjectId(id),
+  });
+  res.status(200).send({ msg: "Deleted" });
+});
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
