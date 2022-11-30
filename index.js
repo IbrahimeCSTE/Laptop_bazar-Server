@@ -100,6 +100,14 @@ app.get("/api/all-buyer", async (req, res) => {
     .toArray();
   res.status(200).send({ buyer: allBuyer });
 });
+//buyer delete
+app.delete("/api/all-buyer/:id", async (req, res) => {
+  const id = req.params.id;
+  await userCollection.deleteOne({
+    _id: ObjectId(id),
+  });
+  res.status(200).send({ msg: "Deleted" });
+});
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
