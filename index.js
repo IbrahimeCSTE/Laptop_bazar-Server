@@ -91,7 +91,15 @@ app.post("/api/user/login", async (req, res) => {
     res.status(400).send({ error: err.massage });
   }
 });
-
+//all buyer
+app.get("/api/all-buyer", async (req, res) => {
+  const allBuyer = await userCollection
+    .find({
+      rol: "buyer",
+    })
+    .toArray();
+  res.status(200).send({ buyer: allBuyer });
+});
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
